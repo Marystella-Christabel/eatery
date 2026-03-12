@@ -1,0 +1,63 @@
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.service-card {
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+}
+
+.service-icon {
+  color: var(--color-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.service-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.service-card p {
+  color: #94A3B8;
+  font-size: 0.95rem;
+}
+
+.waybill-details {
+  padding: 3rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(10, 25, 47, 0.8), rgba(124, 58, 237, 0.1));
+}
+
+.waybill-steps {
+  list-style: none;
+}
+
+.waybill-steps li {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+  font-size: 1.05rem;
+  color: #E2E8F0;
+}
+
+.waybill-steps li::before {
+  content: '•';
+  color: var(--color-secondary);
+  font-weight: bold;
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0;
+  top: -4px;
+}
+
+.waybill-steps strong {
+  color: var(--color-accent);
+}
