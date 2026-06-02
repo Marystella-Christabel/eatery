@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, clearError } from '../store/authSlice';
 import { LogIn } from 'lucide-react';
 import './Auth.css';
 
@@ -10,12 +10,16 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(clearError());
     if (email && password) {
-      dispatch(login({ email, name: email.split('@')[0] }));
-      navigate('/');
+      const result = await dispatch(loginUser({ email, password }));
+      if (loginUser.fulfilled.match(result)) {
+        navigate('/');
+      }
     }
   };
 
@@ -40,6 +44,7 @@ const SignIn = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -52,10 +57,15 @@ const SignIn = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="btn btn-primary auth-btn">Sign In</button>
+          {error && <p className="auth-error">{error}</p>}
+
+          <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
 
         <p className="auth-switch">

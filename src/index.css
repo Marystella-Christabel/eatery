@@ -80,3 +80,49 @@ a {
 .mb-3 { margin-bottom: 1.5rem; }
 .mb-4 { margin-bottom: 2rem; }
 .mt-4 { margin-top: 2rem; }
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Tablets & large phones */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .page {
+    padding-top: 70px;
+    min-height: calc(100vh - 70px);
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+}
+
+/* Standard phones */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .page {
+    padding-top: 64px;
+    min-height: calc(100vh - 64px);
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.3rem; }
+  h3 { font-size: 1.1rem; }
+
+  .mb-4 { margin-bottom: 1.5rem; }
+  .mt-4 { margin-top: 1.5rem; }
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
+}

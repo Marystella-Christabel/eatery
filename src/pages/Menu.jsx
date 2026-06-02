@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveCategory } from '../store/menuSlice';
+import { setActiveCategory, fetchMenu } from '../store/menuSlice';
 import { addToCart } from '../store/orderSlice';
 import FoodCard from '../components/FoodCard';
 import './Menu.css';
 
 const Menu = () => {
   const dispatch = useDispatch();
-  const { items, categories, activeCategory } = useSelector((state) => state.menu);
+  const { items, categories, activeCategory, loading, error } = useSelector((state) => state.menu);
+
+  useEffect(() => {
+    dispatch(fetchMenu());
+  }, [dispatch]);
 
   const filtered = activeCategory === 'All'
     ? items
@@ -35,18 +39,32 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="menu-grid">
-        {filtered.map((item) => (
-          <FoodCard
-            key={item.id}
-            title={item.title}
-            description={item.description}
-            price={item.price}
-            imageUrl={item.imageUrl}
-            onAddToCart={() => dispatch(addToCart(item))}
-          />
-        ))}
-      </div>
+      {loading && (
+        <div className="text-center" style={{ padding: '3rem', color: '#94A3B8' }}>
+          <p>Loading menu...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center" style={{ padding: '3rem', color: '#EF4444' }}>
+          <p>Failed to load menu. Please try again later.</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="menu-grid">
+          {filtered.map((item) => (
+            <FoodCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              price={item.price}
+              imageUrl={item.image_url || item.imageUrl}
+              onAddToCart={() => dispatch(addToCart(item))}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

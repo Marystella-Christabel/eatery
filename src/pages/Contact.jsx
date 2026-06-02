@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import api from '../api/client';
 import './Forms.css';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const data = await api.sendMessage(formData);
+      setSuccess(data.message);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container mt-4 mb-4">
       <div className="text-center mb-4">
@@ -51,28 +78,39 @@ const Contact = () => {
 
         <div className="form-wrapper glass">
           <h2 className="mb-3 text-center">Send a Message</h2>
-          <form className="custom-form">
+
+          {success && (
+            <div style={{ padding: '1rem', marginBottom: '1rem', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10B981', textAlign: 'center' }}>
+              {success}
+            </div>
+          )}
+
+          <form className="custom-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="contact-name">Your Name</label>
-              <input type="text" id="contact-name" placeholder="John Doe" required />
+              <input type="text" id="contact-name" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required disabled={loading} />
             </div>
             
             <div className="form-group">
               <label htmlFor="contact-email">Email Address</label>
-              <input type="email" id="contact-email" placeholder="john@example.com" required />
+              <input type="email" id="contact-email" name="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} required disabled={loading} />
             </div>
 
             <div className="form-group">
               <label htmlFor="contact-subject">Subject</label>
-              <input type="text" id="contact-subject" placeholder="Reservation, Feedback, etc." required />
+              <input type="text" id="contact-subject" name="subject" placeholder="Reservation, Feedback, etc." value={formData.subject} onChange={handleChange} required disabled={loading} />
             </div>
 
             <div className="form-group">
               <label htmlFor="contact-message">Message</label>
-              <textarea id="contact-message" rows="5" placeholder="How can we help you?" required></textarea>
+              <textarea id="contact-message" name="message" rows="5" placeholder="How can we help you?" value={formData.message} onChange={handleChange} required disabled={loading}></textarea>
             </div>
 
-            <button type="button" className="btn btn-primary w-100" style={{ width: '100%' }}>Send Message</button>
+            {error && <p className="auth-error" style={{ marginBottom: '1rem' }}>{error}</p>}
+
+            <button type="submit" className="btn btn-primary w-100" style={{ width: '100%' }} disabled={loading}>
+              {loading ? 'Sending...' : 'Send Message'}
+            </button>
           </form>
         </div>
       </div>

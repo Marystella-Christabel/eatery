@@ -112,3 +112,63 @@
   font-size: 0.95rem;
   line-height: 1.5;
 }
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 480px) {
+  .form-wrapper {
+    padding: 1.5rem;
+  }
+
+  .contact-info-panel {
+    padding: 1.5rem;
+  }
+
+  .custom-form input,
+  .custom-form select,
+  .custom-form textarea {
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  .info-item {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0.6rem;
+  }
+
+  .info-item h3 {
+    font-size: 1rem;
+  }
+
+  .info-item p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .form-wrapper {
+    padding: 1.25rem;
+  }
+
+  .contact-info-panel {
+    padding: 1.25rem;
+  }
+
+  .custom-form input,
+  .custom-form select,
+  .custom-form textarea {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+}

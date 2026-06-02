@@ -34,3 +34,37 @@
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
 }
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .menu-categories {
+    gap: 0.6rem;
+  }
+
+  .category-btn {
+    padding: 0.45rem 1.1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .menu-categories {
+    gap: 0.5rem;
+  }
+
+  .category-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.8rem;
+  }
+}

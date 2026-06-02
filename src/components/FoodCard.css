@@ -61,3 +61,57 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .food-card-img {
+    height: 200px;
+  }
+
+  .food-card-content {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .food-card-img {
+    height: 180px;
+  }
+
+  .food-card-content {
+    padding: 1rem;
+  }
+
+  .food-title {
+    font-size: 1.1rem;
+  }
+
+  .food-desc {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .food-price {
+    font-size: 1.1rem;
+  }
+
+  .btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .food-footer {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .food-card-img {
+    height: 150px;
+  }
+
+  .food-card:hover {
+    transform: translateY(-4px);
+  }
+}

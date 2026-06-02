@@ -1,4 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../api/client';
+
+export const submitOrder = createAsyncThunk('order/submitOrder', async (_, { getState, rejectWithValue }) => {
+  try {
+    const { cart, customerInfo, deliveryType } = getState().order;
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const data = await api.createOrder({
+      items: cart,
+      customerInfo,
+      deliveryType,
+      total,
+    });
+
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const orderSlice = createSlice({
   name: 'order',
@@ -6,6 +25,9 @@ const orderSlice = createSlice({
     cart: [],
     customerInfo: { name: '', phone: '', address: '' },
     deliveryType: 'pickup',
+    loading: false,
+    error: null,
+    successMessage: null,
   },
   reducers: {
     addToCart: (state, action) => {
@@ -40,9 +62,33 @@ const orderSlice = createSlice({
       state.cart = [];
       state.customerInfo = { name: '', phone: '', address: '' };
       state.deliveryType = 'pickup';
+      state.successMessage = null;
     },
+    clearOrderStatus: (state) => {
+      state.error = null;
+      state.successMessage = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(submitOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(submitOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = action.payload.message;
+        state.cart = [];
+        state.customerInfo = { name: '', phone: '', address: '' };
+        state.deliveryType = 'pickup';
+      })
+      .addCase(submitOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, setCustomerInfo, setDeliveryType, clearCart } = orderSlice.actions;
+export const { addToCart, removeFromCart, updateQuantity, setCustomerInfo, setDeliveryType, clearCart, clearOrderStatus } = orderSlice.actions;
 export default orderSlice.reducer;

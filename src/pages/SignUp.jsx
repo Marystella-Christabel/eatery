@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { signup } from '../store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupUser, clearError } from '../store/authSlice';
 import { UserPlus } from 'lucide-react';
 import './Auth.css';
 
@@ -10,22 +10,30 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error: serverError } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLocalError('');
+    dispatch(clearError());
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setLocalError('Passwords do not match.');
       return;
     }
+
     if (name && email && password) {
-      dispatch(signup({ name, email }));
-      navigate('/');
+      const result = await dispatch(signupUser({ name, email, password }));
+      if (signupUser.fulfilled.match(result)) {
+        navigate('/');
+      }
     }
   };
+
+  const displayError = localError || serverError;
 
   return (
     <div className="auth-page">
@@ -48,6 +56,7 @@ const SignUp = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -60,6 +69,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -73,6 +83,7 @@ const SignUp = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="form-group">
@@ -84,13 +95,16 @@ const SignUp = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
           </div>
 
-          {error && <p className="auth-error">{error}</p>}
+          {displayError && <p className="auth-error">{displayError}</p>}
 
-          <button type="submit" className="btn btn-primary auth-btn">Create Account</button>
+          <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
 
         <p className="auth-switch">

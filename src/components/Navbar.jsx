@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Menu, X, UtensilsCrossed, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, UtensilsCrossed, ShoppingCart, User, LogOut, ClipboardList, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
@@ -10,9 +10,16 @@ const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const cartCount = useSelector((state) => state.order.cart.reduce((sum, item) => sum + item.quantity, 0));
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    closeMenu();
+    navigate('/');
+  };
 
   return (
     <nav className="navbar glass">
@@ -32,6 +39,15 @@ const Navbar = () => {
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </Link>
           <Link to="/contact" className="nav-link">Contact</Link>
+          {isAuthenticated && (
+            <Link to="/my-orders" className="nav-link">My Orders</Link>
+          )}
+          {isAuthenticated && user?.role === 'admin' && (
+            <Link to="/admin" className="nav-link nav-admin-link">
+              <Shield size={15} style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+              Admin
+            </Link>
+          )}
         </div>
 
         {/* Auth Section */}
@@ -39,7 +55,7 @@ const Navbar = () => {
           {isAuthenticated ? (
             <div className="auth-user-area">
               <span className="user-greeting">Hi, {user?.name}</span>
-              <button className="nav-auth-btn" onClick={() => dispatch(logout())} title="Sign Out">
+              <button className="nav-auth-btn" onClick={handleLogout} title="Sign Out">
                 <LogOut size={18} />
               </button>
             </div>
@@ -65,9 +81,18 @@ const Navbar = () => {
           </Link>
           <Link to="/contact" className="nav-link" onClick={closeMenu}>Contact</Link>
           {isAuthenticated ? (
-            <button className="nav-link mobile-logout" onClick={() => { dispatch(logout()); closeMenu(); }}>
-              Sign Out
-            </button>
+            <>
+              <Link to="/my-orders" className="nav-link" onClick={closeMenu}>My Orders</Link>
+              {user?.role === 'admin' && (
+                <Link to="/admin" className="nav-link" onClick={closeMenu}>
+                  <Shield size={15} style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+                  Admin
+                </Link>
+              )}
+              <button className="nav-link mobile-logout" onClick={handleLogout}>
+                Sign Out
+              </button>
+            </>
           ) : (
             <Link to="/signin" className="nav-link" onClick={closeMenu}>Sign In</Link>
           )}
