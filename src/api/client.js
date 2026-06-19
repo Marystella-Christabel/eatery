@@ -1,5 +1,6 @@
 const BASE_URL = '/api';
 
+
 /**
  * API client for Galaxy Restaurant server.
  * Automatically attaches JWT token from localStorage if available.
